@@ -36,11 +36,10 @@ def generate_synthetic_data(data_len=1000, block_max_len=50, block_height=50):
     while x < DATA_LEN:
       # toss a coin and if successful, add the block
       if not added_block and RNG.random() < chances:
-        for x in range(math.floor(((RNG.random()+0.6)*0.625)*BLOCK_MAX_LEN)):
-          SYNTH_DATA[x] = BLOCK_HEIGHT
-          if x < DATA_LEN:
-            x += 1
-          else:
+        selected_block_len = math.floor(((RNG.random()+0.6)*0.625)*BLOCK_MAX_LEN)
+        for i in range(selected_block_len):
+          SYNTH_DATA[x+i] = BLOCK_HEIGHT
+          if x+i >= DATA_LEN:
             break
         added_block = True
         break
