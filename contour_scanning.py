@@ -37,6 +37,7 @@ def generate_synthetic_data(data_len=1000, block_max_len=50, block_height=50):
       # toss a coin and if successful, add the block
       if not added_block and RNG.random() < chances:
         selected_block_len = math.floor(((RNG.random()+0.6)*0.625)*BLOCK_MAX_LEN)
+        print("Adding block at", x, "to", x+selected_block_len)
         for i in range(selected_block_len):
           SYNTH_DATA[x+i] = BLOCK_HEIGHT
           if x+i >= DATA_LEN:
@@ -110,6 +111,7 @@ def detect_obstacle(data=[]):
   # Mark the ending edge
   block_end = x
 
+  print("Detected block at (", block_start, ",", block_end, ").")
   # Return the coordinates as a tuple?
   return (block_start, block_end)
 #####################################################################################
