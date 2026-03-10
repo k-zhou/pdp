@@ -13,10 +13,6 @@ PORT = os.getenv('XPRO_PORT')  # Change to 'COM3' etc. on Windows
 BAUD = 115200
 
 SERIAL_CONST = None
-COMMANDS = {
-    "move":move,
-    "quit":quit_program
-}
 # IMPORTANT TODO: Check the directions and correct if needed
 DIRECTIONS_MAP = {
     "up":"X",
@@ -25,6 +21,7 @@ DIRECTIONS_MAP = {
     "right":"Y-"
 }
 
+COMMANDS = None
 CONFIRM_QUIT = False
 
 # class cnc_class:
@@ -36,23 +33,38 @@ def move(direction, distance_mm=1000, speed=2000):
     direction = DIRECTIONS_MAP.get(direction, 0) or "X"
     SERIAL_CONST.write(f"G1 {direction}{distance_mm} F{speed}\n")
 
+def show_help():
+    all_commands = " ".join(COMMANDS.keys())
+    print("All available commands:", all_commands)
+
 def quit_program():
-    if input() == "yes" or "y":
+    u_in = input('Confirm quitting by entering "yes" or "y"').strip()
+    print(u_in)
+    if u_in == "yes" or u_in == "y":
         CONFIRM_QUIT = True
+        print(f"Should quit, {CONFIRM_QUIT}")
+
+COMMANDS = {
+    "help":"show_help",
+    "move":"move",
+    "quit":"quit_program"
+}
 
 def run_persistent():
     while not CONFIRM_QUIT:
-        user_input = input()
+        user_input = input("[CNC control]> ")
         stripped = user_input.strip()
         splitted = stripped.split(' ')
         # TODO: Based on the user's input, do stuff, until the input is quit
         if len(splitted) > 0 and COMMANDS.get(splitted[0], 0):
             joined   = None
+            eval_str = f"{COMMANDS.get(splitted[0])}()"
             if len(splitted) > 1:
                 bracketed = ['"' + item + '"' for item in splitted[1:]]
                 joined = ", ".join(bracketed[:])
-            eval_str = f"{COMMANDS.get(splitted[0])}({joined})"
+                eval_str = f"{COMMANDS.get(splitted[0])}({joined})"
             print(f"The result is {eval_str}")
+            eval(eval_str)
 
 @contextmanager
 def cnc_controller_manager(*args, **kwargs):
@@ -69,17 +81,16 @@ def cnc_controller_manager(*args, **kwargs):
 
         # 3. Run the main persistent UI
         run_persistent()
+        print("Exiting ...")
 
     except Exception as e:
         print(f"Error: {e}")
     finally:
         s.close()
 
-
 if __name__ == "__main__":
     with cnc_controller_manager() as controller:
         println("Starting...")
-
 
 ######################
 # For testing purposes
