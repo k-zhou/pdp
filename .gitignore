@@ -1,5 +1,8 @@
 *.*
 
+commands
+
+!compose.yaml
 !.gitignore
 !*.py
 !*.ipynb
