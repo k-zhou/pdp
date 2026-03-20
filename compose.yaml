@@ -1,0 +1,19 @@
+services:
+  front:
+    build: user-interface
+    restart: unless-stopped
+    volumes:
+      - ./user-interface:/app
+    ports:
+      - 5173:5173
+    # depends on:
+    #   - back
+
+  back:
+    # apparantly this needs to match the folder name
+    build: backend
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+    ports:
+      - 5000:5000
