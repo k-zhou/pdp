@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/k-zhou/pdp-2025-lumo-backend.git
+[submodule "user-interface"]
+	path = user-interface
+	url = https://github.com/k-zhou/pdp-2025-lumo-user-interface.git
